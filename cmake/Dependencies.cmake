@@ -82,7 +82,7 @@ else()
       "Cannot find threading library. Caffe2 requires Threads to compile.")
 endif()
 
-if(USE_TBB)
+if(0)
   message(STATUS "Compiling TBB from source")
   # Unset our restrictive C++ flags here and reset them later.
   # Remove this once we use proper target_compile_options.
@@ -131,8 +131,7 @@ elseif(BLAS STREQUAL "ATLAS")
   list(APPEND Caffe2_PUBLIC_DEPENDENCY_LIBS cblas)
 elseif(BLAS STREQUAL "OpenBLAS")
   find_package(OpenBLAS REQUIRED)
-  include_directories(SYSTEM ${OpenBLAS_INCLUDE_DIR})
-  list(APPEND Caffe2_PUBLIC_DEPENDENCY_LIBS ${OpenBLAS_LIB})
+  list(APPEND Caffe2_PUBLIC_DEPENDENCY_LIBS OpenBLAS::OpenBLAS)
 elseif(BLAS STREQUAL "MKL")
   if(BLAS_SET_BY_USER)
     find_package(MKL REQUIRED)
@@ -465,7 +464,6 @@ if(USE_PYTORCH_QNNPACK)
       # We build static versions of QNNPACK and pthreadpool but link
       # them into a shared library for Caffe2, so they need PIC.
       set_property(TARGET pytorch_qnnpack PROPERTY POSITION_INDEPENDENT_CODE ON)
-      set_property(TARGET cpuinfo PROPERTY POSITION_INDEPENDENT_CODE ON)
 
       if(PYTORCH_QNNPACK_CUSTOM_THREADPOOL)
         target_compile_definitions(
@@ -495,7 +493,6 @@ endif()
 
 # ---[ NNPACK
 if(USE_NNPACK)
-  include(${CMAKE_CURRENT_LIST_DIR}/External/nnpack.cmake)
   if(NNPACK_FOUND)
     if(TARGET nnpack)
       # ---[ NNPACK is being built together with Caffe2: explicitly specify dependency
@@ -1349,9 +1346,8 @@ if(USE_DISTRIBUTED AND USE_TENSORPIPE)
     set(TP_BUILD_LIBUV ON CACHE BOOL "" FORCE)
     set(TP_STATIC_OR_SHARED STATIC CACHE STRING "" FORCE)
 
-    add_subdirectory(${PROJECT_SOURCE_DIR}/third_party/tensorpipe)
 
-    list(APPEND Caffe2_DEPENDENCY_LIBS tensorpipe)
+    list(APPEND Caffe2_DEPENDENCY_LIBS CONAN_PKG::tensorpipe)
   endif()
 endif()
 
@@ -1431,7 +1427,6 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
   if(NOT USE_SYSTEM_ONNX)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../third_party/onnx EXCLUDE_FROM_ALL)
   endif()
-  add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../third_party/foxi EXCLUDE_FROM_ALL)
 
   add_definitions(-DONNX_NAMESPACE=${ONNX_NAMESPACE})
   if(NOT USE_SYSTEM_ONNX)
@@ -1445,23 +1440,9 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
     endif()
     list(APPEND Caffe2_DEPENDENCY_WHOLE_LINK_LIBS onnx_library)
   else()
-    add_library(onnx SHARED IMPORTED)
-    find_library(ONNX_LIBRARY onnx)
-    if(NOT ONNX_LIBRARY)
-      message(FATAL_ERROR "Cannot find onnx")
-    endif()
-    set_property(TARGET onnx PROPERTY IMPORTED_LOCATION ${ONNX_LIBRARY})
-    add_library(onnx_proto SHARED IMPORTED)
-    find_library(ONNX_PROTO_LIBRARY onnx_proto)
-    if(NOT ONNX_PROTO_LIBRARY)
-      message(FATAL_ERROR "Cannot find onnx")
-    endif()
-    set_property(TARGET onnx_proto PROPERTY IMPORTED_LOCATION ${ONNX_PROTO_LIBRARY})
-    message("-- Found onnx: ${ONNX_LIBRARY} ${ONNX_PROTO_LIBRARY}")
+    find_package(ONNX REQUIRED CONFIG)
     list(APPEND Caffe2_DEPENDENCY_LIBS onnx_proto onnx)
   endif()
-  include_directories(${FOXI_INCLUDE_DIRS})
-  list(APPEND Caffe2_DEPENDENCY_LIBS foxi_loader)
   # Recover the build shared libs option.
   set(BUILD_SHARED_LIBS ${TEMP_BUILD_SHARED_LIBS})
 endif()
@@ -1776,7 +1757,6 @@ endif()
 #
 set(TEMP_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libs" FORCE)
-add_subdirectory(${PROJECT_SOURCE_DIR}/third_party/fmt)
 
 # Disable compiler feature checks for `fmt`.
 #
@@ -1785,9 +1765,8 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/third_party/fmt)
 # CMAKE_CXX_FLAGS in ways that break feature checks. Since we already know
 # `fmt` is compatible with a superset of the compilers that PyTorch is, it
 # shouldn't be too bad to just disable the checks.
-set_target_properties(fmt-header-only PROPERTIES INTERFACE_COMPILE_FEATURES "")
 
-list(APPEND Caffe2_DEPENDENCY_LIBS fmt::fmt-header-only)
+list(APPEND Caffe2_DEPENDENCY_LIBS CONAN_PKG::fmt)
 set(BUILD_SHARED_LIBS ${TEMP_BUILD_SHARED_LIBS} CACHE BOOL "Build shared libs" FORCE)
 
 # ---[ Kineto
