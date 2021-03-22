@@ -7,7 +7,7 @@
 
 #include "caffe2/core/logging.h"
 #include "caffe2/opt/shape_info.h"
-#include "onnx/onnxifi_loader.h"
+#include "foxi/onnxifi_loader.h"
 
 namespace caffe2 {
 namespace onnx {

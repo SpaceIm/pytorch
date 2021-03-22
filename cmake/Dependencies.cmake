@@ -1438,6 +1438,8 @@ if(CAFFE2_CMAKE_BUILDING_WITH_MAIN_REPO AND NOT INTERN_DISABLE_ONNX)
     find_package(ONNX REQUIRED CONFIG)
     list(APPEND Caffe2_DEPENDENCY_LIBS onnx_proto onnx)
   endif()
+  include_directories(${FOXI_INCLUDE_DIRS})
+  list(APPEND Caffe2_DEPENDENCY_LIBS CONAN_PKG::foxi)
   # Recover the build shared libs option.
   set(BUILD_SHARED_LIBS ${TEMP_BUILD_SHARED_LIBS})
 endif()
