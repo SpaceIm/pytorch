@@ -188,7 +188,7 @@ if(INTERN_BUILD_ATEN_OPS)
   set(GEN_COMMAND
       "${PYTHON_EXECUTABLE}" -m tools.codegen.gen
       --source-path ${CMAKE_CURRENT_LIST_DIR}/../aten/src/ATen
-      --install_dir ${CMAKE_BINARY_DIR}/aten/src/ATen
+      --install_dir ${Torch_BINARY_DIR}/aten/src/ATen
       ${GEN_ROCM_FLAG}
       ${CUSTOM_BUILD_FLAGS}
       ${GEN_VULKAN_FLAGS}
