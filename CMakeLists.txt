@@ -539,6 +539,8 @@ endif()
 # The below means we are cross compiling for arm64 or x86_64 on MacOSX
 if(NOT IOS AND CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND CMAKE_OSX_ARCHITECTURES MATCHES "^(x86_64|arm64)$")
   set(CROSS_COMPILING_MACOSX TRUE)
+endif()
+if(0)
   # We need to compile a universal protoc to not fail protobuf build
   execute_process(COMMAND ./scripts/build_host_protoc.sh --other-flags "-DCMAKE_OSX_ARCHITECTURES=x86_64;arm64"
                   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
