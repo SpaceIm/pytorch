@@ -56,6 +56,11 @@ if(CAFFE2_COMPILER_SUPPORTS_AVX2_EXTENSIONS)
   list(APPEND
        Caffe2_DEPENDENCY_WHOLE_LINK_LIBS
        "Caffe2_perfkernels_avx2_interface")
+  if(NOT BUILD_SHARED_LIBS)
+    install(TARGETS Caffe2_perfkernels_avx Caffe2_perfkernels_avx2
+            EXPORT Caffe2Targets
+            DESTINATION ${CMAKE_INSTALL_LIBDIR})
+  endif()
 
   if(CAFFE2_COMPILER_SUPPORTS_AVX512_EXTENSIONS)
     add_library(Caffe2_perfkernels_avx512 STATIC ${avx512_srcs})
@@ -84,6 +89,11 @@ if(CAFFE2_COMPILER_SUPPORTS_AVX2_EXTENSIONS)
     list(APPEND
          Caffe2_DEPENDENCY_WHOLE_LINK_LIBS
          "Caffe2_perfkernels_avx512_interface")
+    if(NOT BUILD_SHARED_LIBS)
+      install(TARGETS Caffe2_perfkernels_avx512
+              EXPORT Caffe2Targets
+              DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    endif()
   endif()
 endif()
 
