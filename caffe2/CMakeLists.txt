@@ -580,7 +580,7 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
       set(DELAY_LOAD_FLAGS "")
     endif()
     target_link_libraries(caffe2_nvrtc ${CUDA_NVRTC} ${CUDA_CUDA_LIB} ${CUDA_NVRTC_LIB} ${DELAY_LOAD_FLAGS})
-    target_include_directories(caffe2_nvrtc PRIVATE ${CUDA_INCLUDE_DIRS})
+    target_include_directories(caffe2_nvrtc PRIVATE ${CUDA_INCLUDE_DIRS} ${CMAKE_BINARY_DIR})
     install(TARGETS caffe2_nvrtc
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
