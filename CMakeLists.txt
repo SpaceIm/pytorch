@@ -272,8 +272,7 @@ if(WIN32)
   set(USE_TENSORPIPE OFF)
   message(WARNING "TensorPipe cannot be used on Windows. Set it to OFF")
 
-  # What do do here?
-  if(USE_DISTRIBUTED AND NOT DEFINED ENV{libuv_ROOT})
+  if(0) # libuv is useless for windows build, don't disable USE_DISTRIBUTED for that
     find_library(
       libuv_tmp_LIBRARY
       NAMES uv libuv
