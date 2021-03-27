@@ -984,6 +984,7 @@ if(BUILD_PYTHON)
 endif()
 
 # ---[ pybind11
+if(BUILD_PYTHON)
 if(NOT pybind11_PREFER_third_party)
   find_package(pybind11 CONFIG)
   if(NOT pybind11_FOUND)
@@ -1005,6 +1006,7 @@ else()
 endif()
 message(STATUS "pybind11 include dirs: " "${pybind11_INCLUDE_DIRS}")
 include_directories(SYSTEM ${pybind11_INCLUDE_DIRS})
+endif()
 
 # ---[ MPI
 if(USE_MPI)
