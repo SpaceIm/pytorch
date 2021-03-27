@@ -1639,7 +1639,7 @@ if(NOT INTERN_BUILD_MOBILE)
       CACHE BOOL "Copy the required BLAS DLLs into the TH install dirs")
   endif()
 
-  options(USE_LAPACK "Use LAPACK" ON)
+  option(USE_LAPACK "Use LAPACK" ON)
   if(USE_LAPACK)
     find_package(LAPACK REQUIRED)
     set(USE_LAPACK 1)
