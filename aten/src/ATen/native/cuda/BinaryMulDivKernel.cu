@@ -5,6 +5,7 @@
 #include <ATen/native/TensorIterator.h>
 #include <ATen/native/BinaryOps.h>
 #include <c10/cuda/CUDAGuard.h>
+#include <ATen/native/cuda/fix_vc_14.28.cuh>
 
 // NOTE: CUDA on Windows requires that the enclosing function
 // of a __device__ lambda not have internal linkage.
@@ -43,7 +44,6 @@ struct MulFunctor<bool> {
   }
 };
 
-
 void div_true_kernel_cuda(TensorIterator& iter) {
   if (iter.is_cpu_scalar(2)) {
     // optimization for floating-point types: if the second operand is a CPU
@@ -81,13 +81,13 @@ void div_trunc_kernel_cuda(TensorIterator& iter) {
       auto inv_b = accscalar_t(1.0) / iter.scalar_value<accscalar_t>(2);
       iter.remove_operand(2);
       gpu_kernel(iter, [inv_b] GPU_LAMBDA (scalar_t a) -> scalar_t {
-        return std::trunc(a * inv_b);
+        return trunc_(a * inv_b);
       });
     });
   } else {
     AT_DISPATCH_FLOATING_TYPES_AND2(kHalf, kBFloat16, dtype, "div_trunc_cuda", [&]() {
       gpu_kernel_with_scalars(iter, [] GPU_LAMBDA (scalar_t a, scalar_t b) -> scalar_t {
-        return std::trunc(a / b);
+        return trunc_(a / b);
       });
     });
   }
@@ -134,12 +134,12 @@ void div_floor_kernel_cuda(TensorIterator& iter) {
 
         scalar_t floordiv;
         if (div != 0) {
-          floordiv = std::floor(div);
+          floordiv = floor_(div);
           if (div - floordiv > scalar_t(0.5)) {
             floordiv += scalar_t(1.0);
           }
         } else {
-          floordiv = std::copysign(scalar_t(0), a * inv_b);
+          floordiv = copysign_(scalar_t(0), a * inv_b);
         }
         return floordiv;
       });
@@ -155,12 +155,12 @@ void div_floor_kernel_cuda(TensorIterator& iter) {
 
         scalar_t floordiv;
         if (div != 0) {
-          floordiv = std::floor(div);
+          floordiv = floor_(div);
           if (div - floordiv > scalar_t(0.5)) {
             floordiv += scalar_t(1.0);
           }
         } else {
-          floordiv = std::copysign(scalar_t(0), a / b);
+          floordiv = copysign_(scalar_t(0), a / b);
         }
         return floordiv;
       });

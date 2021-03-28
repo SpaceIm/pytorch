@@ -7,18 +7,19 @@
 #include <ATen/native/DispatchStub.h>
 #include <ATen/native/TensorIterator.h>
 #include <ATen/native/cuda/Math.cuh>
+#include <ATen/native/cuda/fix_vc_14.28.cuh>
 
 namespace at { namespace native {
 
 // We manually overload ceil because std::ceil does not work with std::complex types.
 template <typename scalar_t>
 __host__ __device__ static inline scalar_t ceil_wrapper(scalar_t a) {
-  return std::ceil(a);
+  return ceil_(a);
 }
 
 template<typename T>
 __host__ __device__ static inline std::complex<T> ceil_wrapper(std::complex<T> v) {
-  return std::complex<T>(std::ceil(v.real()), std::ceil(v.imag()));
+  return std::complex<T>(ceil_(v.real()), ceil_(v.imag()));
 }
 
 void ceil_kernel_cuda(TensorIterator& iter) {
@@ -40,12 +41,12 @@ void frac_kernel_cuda(TensorIterator& iter) {
 // We manually overload floor because std::floor does not work with std::complex types.
 template <typename scalar_t>
 __host__ __device__ static inline scalar_t floor_wrapper(scalar_t a) {
-  return std::floor(a);
+  return floor_(a);
 }
 
 template<typename T>
 __host__ __device__ static inline std::complex<T> floor_wrapper(std::complex<T> v) {
-  return std::complex<T>(std::floor(v.real()), std::floor(v.imag()));
+  return std::complex<T>(floor_(v.real()), floor_(v.imag()));
 }
 
 void floor_kernel_cuda(TensorIterator& iter) {

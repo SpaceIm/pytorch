@@ -5,6 +5,7 @@
 #include <ATen/cuda/Exceptions.h>
 #include <ATen/cuda/CUDAContext.h>
 #include <ATen/detail/FunctionTraits.h>
+#include <ATen/native/cuda/fix_vc_14.28.cuh>
 #include <cmath>
 #include <limits>
 
@@ -220,10 +221,10 @@ Tensor& arange_cuda_out(Tensor& result, Scalar start, Scalar end, Scalar step) {
     // the corner-case we do want to take into account is int64_t, which has higher precision than double
     double size_d;
     if (std::is_same<scalar_t, int64_t>::value) {
-      size_d = std::ceil(static_cast<double>(end.to<accscalar_t>() - start.to<accscalar_t>())
+      size_d = ceil_(static_cast<double>(end.to<accscalar_t>() - start.to<accscalar_t>())
                           / step.to<accscalar_t>());
     } else {
-      size_d = std::ceil(static_cast<double>(end.to<double>() - start.to<double>())
+      size_d = ceil_(static_cast<double>(end.to<double>() - start.to<double>())
                           / step.to<double>());
     }
 

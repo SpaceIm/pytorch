@@ -8,6 +8,7 @@
 #include <THC/THCAtomics.cuh>
 #include <THC/THCGeneral.h>
 #include <THC/THCNumerics.cuh>
+#include <ATen/native/cuda/fix_vc_14.28.cuh>
 
 #include <algorithm>
 #include <cfloat>
@@ -20,11 +21,11 @@ namespace native {
 namespace {
 
 __device__ inline int start_index(int a, int b, int c) {
-  return (int)std::floor((float)(a * c) / b);
+  return (int)floor_((float)(a * c) / b);
 }
 
 __device__ inline int end_index(int a, int b, int c) {
-  return (int)std::ceil((float)((a + 1) * c) / b);
+  return (int)ceil_((float)((a + 1) * c) / b);
 }
 
 // 4d tensor B x D x H x W

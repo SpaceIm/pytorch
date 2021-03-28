@@ -4,6 +4,7 @@
 #include <ATen/NativeFunctions.h>
 #include <ATen/TensorUtils.h>
 #include <ATen/Utils.h>
+#include <ATen/native/cuda/fix_vc_14.28.cuh>
 // keeping THC headers for gpuAtomicAdd
 #include <THC/THCAtomics.cuh>
 
@@ -320,7 +321,7 @@ void reflection_pad2d_out_template(
   int output_plane_size = output_h * output_w;
   dim3 block_size(output_plane_size > 256 ? 256 : output_plane_size);
   dim3 grid_size(
-    (int) std::ceil(output_plane_size/256.0), nplane, nbatch);
+    (int) ceil_(output_plane_size/256.0), nplane, nbatch);
 
   AT_DISPATCH_FLOATING_AND_COMPLEX_TYPES_AND1(kHalf,
     input.scalar_type(), "reflection_pad2d_out_template", [&] {
@@ -381,7 +382,7 @@ void reflection_pad2d_backward_out_template(
   int output_plane_size = output_h * output_w;
   dim3 block_size(output_plane_size > 256 ? 256 : output_plane_size);
   dim3 grid_size(
-    (int) std::ceil(output_plane_size/256.0), nplane, nbatch);
+    (int) ceil_(output_plane_size/256.0), nplane, nbatch);
 
   AT_DISPATCH_FLOATING_AND_COMPLEX_TYPES_AND1(kHalf,
     input.scalar_type(), "reflection_pad2d_backward_out_template", [&] {
