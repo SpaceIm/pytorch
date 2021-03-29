@@ -1384,7 +1384,7 @@ if(BUILD_SHARED_LIBS)
   endif()
   set_target_properties(torch_global_deps PROPERTIES LINKER_LANGUAGE C)
   if(USE_MPI)
-      target_link_libraries(torch_global_deps ${MPI_CXX_LIBRARIES})
+      target_link_libraries(torch_global_deps CONAN_PKG::openmpi)
   endif()
   target_link_libraries(torch_global_deps ${MKL_LIBRARIES})
   # The CUDA libraries are linked here for a different reason: in some
