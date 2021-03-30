@@ -349,7 +349,7 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
     if(NOT WIN32)
       add_library(process_group_agent "${TORCH_SRC_DIR}/csrc/distributed/rpc/process_group_agent.cpp" "${TORCH_SRC_DIR}/csrc/distributed/rpc/process_group_agent.h")
       target_link_libraries(process_group_agent PRIVATE torch c10d CONAN_PKG::fmt)
-      add_dependencies(process_group_agent torch c10d)
+      install(TARGETS process_group_agent DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
       add_library(tensorpipe_agent
         "${TORCH_SRC_DIR}/csrc/distributed/rpc/macros.h"
@@ -359,7 +359,7 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
         "${TORCH_SRC_DIR}/csrc/distributed/rpc/tensorpipe_utils.h"
         )
       target_link_libraries(tensorpipe_agent PRIVATE torch c10d CONAN_PKG::fmt)
-      add_dependencies(tensorpipe_agent torch c10d)
+      install(TARGETS tensorpipe_agent DESTINATION ${CMAKE_INSTALL_LIBDIR})
       if(USE_TENSORPIPE)
         if(USE_CUDA)
           target_compile_definitions(tensorpipe_agent PUBLIC USE_CUDA)
