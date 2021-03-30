@@ -750,8 +750,7 @@ endif()
 # ---[ LevelDB
 # ---[ Snappy
 if(USE_LEVELDB)
-  set(LEVELDB_FOUND 1)
-  if(LEVELDB_FOUND AND SNAPPY_FOUND)
+  if(1)
     list(APPEND Caffe2_DEPENDENCY_LIBS CONAN_PKG::leveldb)
   else()
     message(WARNING "Not compiling with LevelDB. Suppress this warning with -DUSE_LEVELDB=OFF")
