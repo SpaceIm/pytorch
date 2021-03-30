@@ -82,14 +82,14 @@ if(USE_OPENCV AND USE_LEVELDB)
   caffe2_binary_target("convert_encoded_to_raw_leveldb.cc")
   target_link_libraries(
       convert_encoded_to_raw_leveldb
-      ${OpenCV_LIBRARIES} CONAN_PKG::leveldb)
+      CONAN_PKG::opencv CONAN_PKG::leveldb)
 endif()
 
 if(USE_OPENCV)
   caffe2_binary_target("make_image_db.cc")
-  target_link_libraries(make_image_db ${OpenCV_LIBRARIES})
+  target_link_libraries(make_image_db CONAN_PKG::opencv)
   caffe2_binary_target("convert_image_to_tensor.cc")
-  target_link_libraries(convert_image_to_tensor ${OpenCV_LIBRARIES})
+  target_link_libraries(convert_image_to_tensor CONAN_PKG::opencv)
 endif()
 
 if(USE_OBSERVERS)
@@ -98,7 +98,7 @@ endif()
 
 if(USE_OBSERVERS AND USE_OPENCV)
   caffe2_binary_target("convert_and_benchmark.cc")
-  target_link_libraries(convert_and_benchmark ${OpenCV_LIBRARIES})
+  target_link_libraries(convert_and_benchmark CONAN_PKG::opencv)
 endif()
 
 # ---[ tutorials
