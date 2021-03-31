@@ -350,6 +350,7 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
       add_library(process_group_agent "${TORCH_SRC_DIR}/csrc/distributed/rpc/process_group_agent.cpp" "${TORCH_SRC_DIR}/csrc/distributed/rpc/process_group_agent.h")
       target_link_libraries(process_group_agent PRIVATE torch c10d fmt::fmt-header-only)
       add_dependencies(process_group_agent torch c10d)
+      install(TARGETS process_group_agent DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
       add_library(tensorpipe_agent
         "${TORCH_SRC_DIR}/csrc/distributed/rpc/macros.h"
@@ -375,6 +376,7 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
         target_compile_definitions(tensorpipe_agent PUBLIC USE_TENSORPIPE)
         target_link_libraries(tensorpipe_agent PRIVATE tensorpipe)
         add_dependencies(tensorpipe_agent tensorpipe)
+        install(TARGETS tensorpipe_agent DESTINATION ${CMAKE_INSTALL_LIBDIR})
       endif()
     endif()
   endif()
@@ -582,7 +584,10 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
     endif()
     target_link_libraries(caffe2_nvrtc ${CUDA_NVRTC} ${CUDA_CUDA_LIB} ${CUDA_NVRTC_LIB} ${DELAY_LOAD_FLAGS})
     target_include_directories(caffe2_nvrtc PRIVATE ${CUDA_INCLUDE_DIRS} ${CMAKE_BINARY_DIR})
-    install(TARGETS caffe2_nvrtc DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+    install(TARGETS caffe2_nvrtc
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
     if(USE_NCCL AND BUILD_SPLIT_CUDA)
       list(APPEND Caffe2_GPU_SRCS_CPP
         ${TORCH_SRC_DIR}/csrc/cuda/nccl.cpp)
@@ -608,7 +613,10 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
     target_link_libraries(caffe2_nvrtc ${PYTORCH_HIP_HCC_LIBRARIES} ${ROCM_HIPRTC_LIB})
     target_include_directories(caffe2_nvrtc PRIVATE ${CMAKE_BINARY_DIR})
     target_compile_definitions(caffe2_nvrtc PRIVATE USE_ROCM __HIP_PLATFORM_HCC__)
-    install(TARGETS caffe2_nvrtc DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+    install(TARGETS caffe2_nvrtc
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
   endif()
 
   if(NOT NO_API)
@@ -1254,18 +1262,36 @@ endif()
 
 caffe2_interface_library(torch torch_library)
 
-install(TARGETS torch_cpu torch_cpu_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+install(TARGETS torch_cpu torch_cpu_library EXPORT Caffe2Targets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(USE_CUDA)
-  install(TARGETS torch_cuda torch_cuda_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+  install(TARGETS torch_cuda torch_cuda_library EXPORT Caffe2Targets
+          RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+          ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+          LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
   if(BUILD_SPLIT_CUDA)
-    install(TARGETS torch_cuda_cu torch_cuda_cu_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
-    install(TARGETS torch_cuda_cpp torch_cuda_cpp_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+    install(TARGETS torch_cuda_cu torch_cuda_cu_library EXPORT Caffe2Targets
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS torch_cuda_cpp torch_cuda_cpp_library EXPORT Caffe2Targets
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
   endif()
 elseif(USE_ROCM)
-  install(TARGETS torch_hip torch_hip_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+  install(TARGETS torch_hip torch_hip_library EXPORT Caffe2Targets
+          RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+          ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+          LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
-install(TARGETS torch torch_library EXPORT Caffe2Targets DESTINATION "${TORCH_INSTALL_LIB_DIR}")
+install(TARGETS torch torch_library EXPORT Caffe2Targets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 target_link_libraries(torch PUBLIC torch_cpu_library)
 
@@ -1281,14 +1307,14 @@ endif()
 
 # Install PDB files for MSVC builds
 if(MSVC AND BUILD_SHARED_LIBS)
-  install(FILES $<TARGET_PDB_FILE:torch_cpu> DESTINATION "${TORCH_INSTALL_LIB_DIR}" OPTIONAL)
+  install(FILES $<TARGET_PDB_FILE:torch_cpu> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
   if(BUILD_SPLIT_CUDA)
-    install(FILES $<TARGET_PDB_FILE:torch_cuda_cu> DESTINATION "${TORCH_INSTALL_LIB_DIR}" OPTIONAL)
-    install(FILES $<TARGET_PDB_FILE:torch_cuda_cpp> DESTINATION "${TORCH_INSTALL_LIB_DIR}" OPTIONAL)
+    install(FILES $<TARGET_PDB_FILE:torch_cuda_cu> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+    install(FILES $<TARGET_PDB_FILE:torch_cuda_cpp> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
   elseif(USE_CUDA)
-    install(FILES $<TARGET_PDB_FILE:torch_cuda> DESTINATION "${TORCH_INSTALL_LIB_DIR}" OPTIONAL)
+    install(FILES $<TARGET_PDB_FILE:torch_cuda> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
   elseif(USE_ROCM)
-    install(FILES $<TARGET_PDB_FILE:torch_hip> DESTINATION "${TORCH_INSTALL_LIB_DIR}" OPTIONAL)
+    install(FILES $<TARGET_PDB_FILE:torch_hip> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
   endif()
 endif()
 

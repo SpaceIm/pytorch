@@ -17,9 +17,12 @@ if(BUILD_CAFFE2_OPS)
 
     torch_set_target_props(caffe2_detectron_ops_gpu)
     target_link_libraries(caffe2_detectron_ops_gpu torch ${OpenMP_link})
-    install(TARGETS caffe2_detectron_ops_gpu DESTINATION lib)
+    install(TARGETS caffe2_detectron_ops_gpu
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
     if(MSVC)
-      install(FILES $<TARGET_PDB_FILE:caffe2_detectron_ops_gpu> DESTINATION lib OPTIONAL)
+      install(FILES $<TARGET_PDB_FILE:caffe2_detectron_ops_gpu> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
     endif()
   elseif(USE_ROCM)
     hip_include_directories(${Caffe2_HIP_INCLUDES})
@@ -31,7 +34,10 @@ if(BUILD_CAFFE2_OPS)
     torch_set_target_props(caffe2_detectron_ops_hip)
     target_compile_options(caffe2_detectron_ops_hip PRIVATE ${HIP_CXX_FLAGS})
     target_link_libraries(caffe2_detectron_ops_hip torch)
-    install(TARGETS caffe2_detectron_ops_hip DESTINATION lib)
+    install(TARGETS caffe2_detectron_ops_hip
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
   elseif(NOT IOS_PLATFORM)
     add_library(caffe2_detectron_ops SHARED ${Detectron_CPU_SRCS})
     if(HAVE_SOVERSION)
@@ -40,9 +46,12 @@ if(BUILD_CAFFE2_OPS)
     endif()
     torch_set_target_props(caffe2_detectron_ops)
     target_link_libraries(caffe2_detectron_ops torch ${OpenMP_link})
-    install(TARGETS caffe2_detectron_ops DESTINATION lib)
+    install(TARGETS caffe2_detectron_ops
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
     if(MSVC)
-      install(FILES $<TARGET_PDB_FILE:caffe2_detectron_ops> DESTINATION lib OPTIONAL)
+      install(FILES $<TARGET_PDB_FILE:caffe2_detectron_ops> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
     endif()
   endif()
 endif()

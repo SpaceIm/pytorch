@@ -106,7 +106,10 @@ endif()
 # Note: for now, we will put all export path into one single Caffe2Targets group
 # to deal with the cmake deployment need. Inside the Caffe2Targets set, the
 # individual libraries like libc10.so and libcaffe2.so are still self-contained.
-install(TARGETS c10 EXPORT Caffe2Targets DESTINATION lib)
+install(TARGETS c10 EXPORT Caffe2Targets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
         DESTINATION include
         FILES_MATCHING PATTERN "*.h")
@@ -114,5 +117,5 @@ install(FILES ${CMAKE_BINARY_DIR}/c10/macros/cmake_macros.h
         DESTINATION include/c10/macros)
 
 if(MSVC AND C10_BUILD_SHARED_LIBS)
-  install(FILES $<TARGET_PDB_FILE:c10> DESTINATION lib OPTIONAL)
+  install(FILES $<TARGET_PDB_FILE:c10> DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
 endif()
