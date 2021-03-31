@@ -1,6 +1,6 @@
 import os
 from typing import List, Dict, Optional, Tuple, Set, Callable, Any, Union, Sequence
-from typing_extensions import Literal
+from typing import Literal
 import yaml
 from collections import OrderedDict, defaultdict
 import argparse

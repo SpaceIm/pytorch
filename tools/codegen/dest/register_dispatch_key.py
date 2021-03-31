@@ -1,6 +1,6 @@
 from typing import List, Optional, Union
 import itertools
-from typing_extensions import Literal
+from typing import Literal
 from dataclasses import dataclass
 
 from tools.codegen.context import *
