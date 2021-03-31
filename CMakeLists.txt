@@ -272,7 +272,7 @@ if(WIN32)
   set(USE_TENSORPIPE OFF)
   message(WARNING "TensorPipe cannot be used on Windows. Set it to OFF")
 
-  if(USE_DISTRIBUTED AND NOT DEFINED ENV{libuv_ROOT})
+  if(0) # don't care, libuv is a dependency of gloo
     find_library(
       libuv_tmp_LIBRARY
       NAMES uv libuv
@@ -538,6 +538,8 @@ endif()
 # The below means we are cross compiling for arm64 or x86_64 on MacOSX
 if(NOT IOS AND CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND CMAKE_OSX_ARCHITECTURES MATCHES "^(x86_64|arm64)$")
   set(CROSS_COMPILING_MACOSX TRUE)
+endif()
+if(0) # trust conan protobuf recipe for cross compilation (anyway it can't work because all the vendoring stuff is missing)
   # We need to compile a universal protoc to not fail protobuf build
   execute_process(COMMAND ./scripts/build_host_protoc.sh --other-flags "-DCMAKE_OSX_ARCHITECTURES=x86_64;arm64"
                   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -617,7 +619,6 @@ endif()
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 14)
 if(NOT MSVC)
-  string(APPEND CMAKE_CXX_FLAGS " -O2 -fPIC")
   string(APPEND CMAKE_CXX_FLAGS " -Wno-narrowing")
   # Eigen fails to build with some versions, so convert this to a warning
   # Details at http://eigen.tuxfamily.org/bz/show_bug.cgi?id=1459

@@ -98,7 +98,7 @@ endif()
 # Note: the folders that are being commented out have not been properly
 # addressed yet.
 
-if(NOT MSVC AND USE_XNNPACK)
+if(0) # don't try to build fxdiv from source
   if(NOT TARGET fxdiv)
     set(FXDIV_BUILD_TESTS OFF CACHE BOOL "")
     set(FXDIV_BUILD_BENCHMARKS OFF CACHE BOOL "")
@@ -348,7 +348,7 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
     # up being empty. Downstream targets should also add a #ifdef guard.
     if(NOT WIN32)
       add_library(process_group_agent "${TORCH_SRC_DIR}/csrc/distributed/rpc/process_group_agent.cpp" "${TORCH_SRC_DIR}/csrc/distributed/rpc/process_group_agent.h")
-      target_link_libraries(process_group_agent PRIVATE torch c10d fmt::fmt-header-only)
+      target_link_libraries(process_group_agent PRIVATE torch c10d CONAN_PKG::fmt)
       add_dependencies(process_group_agent torch c10d)
       install(TARGETS process_group_agent DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
@@ -359,7 +359,7 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
         "${TORCH_SRC_DIR}/csrc/distributed/rpc/tensorpipe_utils.cpp"
         "${TORCH_SRC_DIR}/csrc/distributed/rpc/tensorpipe_utils.h"
         )
-      target_link_libraries(tensorpipe_agent PRIVATE torch c10d tensorpipe fmt::fmt-header-only)
+      target_link_libraries(tensorpipe_agent PRIVATE torch c10d CONAN_PKG::fmt)
       add_dependencies(tensorpipe_agent torch c10d)
       if(USE_TENSORPIPE)
         if(USE_CUDA)
@@ -374,8 +374,7 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
         endif()
 
         target_compile_definitions(tensorpipe_agent PUBLIC USE_TENSORPIPE)
-        target_link_libraries(tensorpipe_agent PRIVATE tensorpipe)
-        add_dependencies(tensorpipe_agent tensorpipe)
+        target_link_libraries(tensorpipe_agent PRIVATE CONAN_PKG::tensorpipe)
         install(TARGETS tensorpipe_agent DESTINATION ${CMAKE_INSTALL_LIBDIR})
       endif()
     endif()
