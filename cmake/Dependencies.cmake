@@ -1338,7 +1338,7 @@ if(USE_DISTRIBUTED AND USE_TENSORPIPE)
     set(TP_STATIC_OR_SHARED STATIC CACHE STRING "" FORCE)
 
 
-    list(APPEND Caffe2_DEPENDENCY_LIBS CONAN_PKG::tensorpipe)
+    list(APPEND Caffe2_DEPENDENCY_LIBS tensorpipe)
   endif()
 endif()
 

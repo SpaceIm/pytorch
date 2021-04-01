@@ -374,7 +374,7 @@ if(NOT INTERN_BUILD_MOBILE OR NOT BUILD_CAFFE2_MOBILE)
         endif()
 
         target_compile_definitions(tensorpipe_agent PUBLIC USE_TENSORPIPE)
-        target_link_libraries(tensorpipe_agent PRIVATE CONAN_PKG::tensorpipe)
+        target_link_libraries(tensorpipe_agent PRIVATE tensorpipe)
         install(TARGETS tensorpipe_agent DESTINATION ${CMAKE_INSTALL_LIBDIR})
       endif()
     endif()
