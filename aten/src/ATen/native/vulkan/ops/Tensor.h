@@ -324,6 +324,7 @@ class vTensor final {
       Component::Flags available_;
       Component::Flags dirty_;
       Bundle bundle_;
+      friend class View;
     };
 
     typedef State::Component Component;
@@ -363,6 +364,7 @@ class vTensor final {
 
    private:
     // Debug
+    friend class vTensor;
     friend std::ostream& operator<<(
       std::ostream&,
       const View::State::Bundle&);
