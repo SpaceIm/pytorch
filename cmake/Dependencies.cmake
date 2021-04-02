@@ -835,6 +835,7 @@ if(USE_FFMPEG)
 endif()
 
 # ---[ Caffe2 depends on FP16 library for half-precision conversions
+if(USE_PYTORCH_QNNPACK)
 if(NOT TARGET fp16 AND NOT USE_SYSTEM_FP16)
   set(CAFFE2_THIRD_PARTY_ROOT "${PROJECT_SOURCE_DIR}/third_party")
   # PSIMD is required by FP16
@@ -855,6 +856,7 @@ elseif(NOT TARGET fp16 AND USE_SYSTEM_FP16)
   set_target_properties(fp16 PROPERTIES LINKER_LANGUAGE C)
 endif()
 list(APPEND Caffe2_DEPENDENCY_LIBS fp16)
+endif()
 
 # ---[ EIGEN
 # Due to license considerations, we will only use the MPL2 parts of Eigen.
